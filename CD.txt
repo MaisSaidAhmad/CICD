@@ -1,0 +1,19 @@
+    pipeline{
+        agent any
+    
+    	stages {
+    		stage('Build') {
+                steps {
+                    copyArtifacts filter: '**/*.war', fingerprintArtifacts: true, projectName: 'CI', selector: lastSuccessful()
+    		    }
+    
+    	        post {
+    		        success {
+        		       deploy adapters: [tomcat9(credentialsId: '839e08d1-0912-459f-a50a-54b31bca0101', path: '', url: 'http://3.64.56.47:8080')], contextPath: null, war: '**/*.war'
+        		  }
+    	        }
+    
+    		}
+    
+    	}
+    }

@@ -1,0 +1,33 @@
+pipeline {
+    
+    agent any
+
+	stages {
+        stage('CodeCheckout') {
+		    steps {
+                git 'https://github.com/jleetutorial/maven-project.git'
+		    }
+		}
+		stage('Build') {
+            steps {
+                sh 'mvn clean package'
+		    }
+		}
+		stage('test') {
+            steps {
+                sh 'mvn test'
+		    }
+		}
+		stage('artifact'){
+		    steps{
+		        archiveArtifacts artifacts: '**/*.war', followSymlinks: false
+		    }
+		    post{
+		        success{
+		            build 'Delivery'
+		        }
+		    }
+		}
+
+	}
+}
